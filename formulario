@@ -1,0 +1,55 @@
+<?php
+// Datos de conexión a la base de datos
+$servername = "localhost";
+$username = "tu_usuario";
+$password = "tu_contraseña";
+$dbname = "tu_base_de_datos";
+
+// Crear conexión
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Verificar conexión
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
+}
+
+// Función para insertar un nuevo cliente en la base de datos
+function insertarCliente($nombre, $direccion, $telefono, $rfc, $edad) {
+    global $conn;
+    $sql = "INSERT INTO clientes (nombre, direccion, telefono, rfc, edad) VALUES ('$nombre', '$direccion', '$telefono', '$rfc', $edad)";
+    if ($conn->query($sql) === TRUE) {
+        echo "Cliente insertado correctamente";
+    } else {
+        echo "Error al insertar el cliente: " . $conn->error;
+    }
+}
+
+// Función para actualizar los datos de un cliente en la base de datos
+function actualizarCliente($id, $nombre, $direccion, $telefono, $rfc, $edad) {
+    global $conn;
+    $sql = "UPDATE clientes SET nombre='$nombre', direccion='$direccion', telefono='$telefono', rfc='$rfc', edad=$edad WHERE id=$id";
+    if ($conn->query($sql) === TRUE) {
+        echo "Cliente actualizado correctamente";
+    } else {
+        echo "Error al actualizar el cliente: " . $conn->error;
+    }
+}
+
+// Función para dar de baja a los clientes con más de dos meses de antigüedad
+function darDeBajaClientes() {
+    global $conn;
+    $fecha_actual = date('Y-m-d H:i:s');
+    $sql = "SELECT id, fecha_registro FROM clientes";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $fecha_registro = $row["fecha_registro"];
+            $diferencia_fechas = strtotime($fecha_actual) - strtotime($fecha_registro);
+            $diferencia_meses = $diferencia_fechas / (60 * 60 * 24 * 30);
+            if ($diferencia_meses > 2) {
+                $id = $row["id"];
+                $sql = "DELETE FROM clientes WHERE id=$id";
+                if ($conn->query($sql) === TRUE) {
+                    echo "Cliente dado de baja correctamente";
+                } else {
+                   
