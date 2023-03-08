@@ -52,4 +52,25 @@ function darDeBajaClientes() {
                 if ($conn->query($sql) === TRUE) {
                     echo "Cliente dado de baja correctamente";
                 } else {
-                   
+                  echo "Error al dar de baja al cliente: " . $conn->error;
+            }
+        }
+    } else {
+        echo "No hay clientes registrados";
+    }
+}
+
+// Ejemplo de uso de las funciones
+
+// Insertar un nuevo cliente
+insertarCliente("Juan Perez", "Calle 123", "555-1234", "ABC123456", 35);
+
+// Actualizar los datos de un cliente existente (por ejemplo, el cliente con ID 1)
+actualizarCliente(1, "Juan Perez", "Calle 456", "555-5678", "DEF789012", 40);
+
+// Dar de baja a los clientes con más de dos meses de antigüedad
+darDeBajaClientes();
+
+// Cerrar conexión
+$conn->close();
+?>
